@@ -2,8 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 
 PROJECT(quake3e)
 
-SET(CNAME "omega")
-SET(DNAME "omg.ded")
+SET(CNAME "quake3e")
+SET(DNAME "quake3e.ded")
 
 SET(RENDERER_PREFIX ${CNAME})
 SET(RENDERER_DEFAULT opengl) # valid options: opengl, vulkan, opengl2

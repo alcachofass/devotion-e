@@ -42,9 +42,9 @@ USE_RENDERER_DLOPEN = 1
 RENDERER_DEFAULT = opengl
 
 CNAME            = omega
-DNAME            = omg.ded
+DNAME            = omg_ded
 
-RENDERER_PREFIX  = $(CNAME)
+RENDERER_PREFIX  = renderer
 
 
 ifeq ($(V),1)
@@ -515,13 +515,13 @@ endif # *NIX platforms
 endif # !MINGW
 
 
-TARGET_CLIENT = $(CNAME)$(ARCHEXT)$(BINEXT)
+TARGET_CLIENT = $(CNAME)$(FULLBINEXT)
 
 TARGET_REND1 = $(RENDERER_PREFIX)_opengl_$(SHLIBNAME)
 TARGET_REND2 = $(RENDERER_PREFIX)_opengl2_$(SHLIBNAME)
 TARGET_RENDV = $(RENDERER_PREFIX)_vulkan_$(SHLIBNAME)
 
-TARGET_SERVER = $(DNAME)$(ARCHEXT)$(BINEXT)
+TARGET_SERVER = $(DNAME)$(FULLBINEXT)
 
 STRINGIFY = $(B)/rend2/stringify$(BINEXT)
 
@@ -596,6 +596,10 @@ define DO_WINDRES
 $(echo_cmd) "WINDRES $<"
 $(Q)$(WINDRES) -i $< -o $@
 endef
+
+ifndef FULLBINEXT
+  FULLBINEXT=.$(ARCH)$(BINEXT)
+endif
 
 ifndef SHLIBNAME
   SHLIBNAME=$(ARCH).$(SHLIBEXT)

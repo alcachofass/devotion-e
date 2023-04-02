@@ -4740,7 +4740,7 @@ static void FS_Startup( void ) {
 	Cmd_AddCommand( "fs_restart", FS_Reload );
 
 	// print the current search paths
-	//FS_Path_f();
+	FS_Path_f();
 	Com_Printf( "...loaded in %i milliseconds\n", end - start );
 
 	Com_Printf( "----------------------\n" );
