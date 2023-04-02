@@ -67,6 +67,7 @@ endif
 
 ifeq ($(COMPILE_PLATFORM),darwin)
   USE_SDL=1
+  USE_LOCAL_HEADERS=1
 endif
 
 ifeq ($(COMPILE_PLATFORM),cygwin)
@@ -189,6 +190,7 @@ R1DIR=$(MOUNT_DIR)/renderer
 R2DIR=$(MOUNT_DIR)/renderer2
 RVDIR=$(MOUNT_DIR)/renderervk
 SDLDIR=$(MOUNT_DIR)/sdl
+SDLHDIR=$(MOUNT_DIR)/SDL2
 
 CMDIR=$(MOUNT_DIR)/qcommon
 UDIR=$(MOUNT_DIR)/unix
@@ -377,7 +379,7 @@ ifdef MINGW
   CLIENT_LDFLAGS=$(LDFLAGS)
 
   ifeq ($(USE_SDL),1)
-    BASE_CFLAGS += -DUSE_LOCAL_HEADERS=1 -I$(MOUNT_DIR)/libsdl/windows/include/SDL2
+    BASE_CFLAGS += -DUSE_LOCAL_HEADERS=1 -I$(SDLHDIR)/SDL2/include
     #CLIENT_CFLAGS += -DUSE_LOCAL_HEADERS=1
     ifeq ($(ARCH),x86)
       CLIENT_LDFLAGS += -L$(MOUNT_DIR)/libsdl/windows/mingw/lib32
@@ -423,12 +425,40 @@ ifeq ($(COMPILE_PLATFORM),darwin)
 
   LDFLAGS =
 
-  ifneq ($(SDL_INCLUDE),)
-    BASE_CFLAGS += $(SDL_INCLUDE)
-    CLIENT_LDFLAGS = $(SDL_LIBS)
+  ifeq ($(USE_LOCAL_HEADERS),1)
+    ifeq ($(ARCH),aarch64)
+      # Universal Binary 2 - for running on macOS 10.9 or later
+      # x86_64 (10.9 or later), arm64 (11.0 or later)
+      MACLIBSDIR=$(MOUNT_DIR)/libsdl/macosx-ub2
+      BASE_CFLAGS += -I$(SDLHDIR)/include
+    else
+      # Universal Binary - for running on Mac OS X 10.5 or later
+      # ppc (10.5/10.6), x86 (10.6 or later), x86_64 (10.6 or later)
+      #
+      # x86/x86_64 on 10.5 will run the ppc build.
+      #
+      # SDL 2.0.1,  last with Mac OS X PowerPC
+      # SDL 2.0.4,  last with Mac OS X 10.5 (x86/x86_64)
+      # SDL 2.0.22, last with Mac OS X 10.6 (x86/x86_64)
+      #
+      # code/libs/macosx-ub/libSDL2-2.0.0.dylib contents
+      # - ppc build is SDL 2.0.1 with a header change so it compiles
+      # - x86/x86_64 build are SDL 2.0.22
+      MACLIBSDIR=$(MOUNT_DIR)/libsdl/macosx-ub
+      ifneq ($(findstring $(ARCH),ppc ppc64),)
+        BASE_CFLAGS += -I$(SDLHDIR)/include-macppc
+      else
+        BASE_CFLAGS += -I$(SDLHDIR)/include-2.0.22
+      endif
+    endif
+
+    # We copy sdlmain before ranlib'ing it so that subversion doesn't think
+    #  the file has been modified by each build.
+    CLIENT_LDFLAGS += $(MACLIBSDIR)/libSDL2-2.0.0.dylib
+    CLIENT_EXTRA_FILES += $(MACLIBSDIR)/libSDL2-2.0.0.dylib
   else
     BASE_CFLAGS += -I/Library/Frameworks/SDL2.framework/Headers
-    CLIENT_LDFLAGS = -F/Library/Frameworks -framework SDL2
+    CLIENT_LDFLAGS += -F/Library/Frameworks -framework SDL2
   endif
 
   ifeq ($(USE_SYSTEM_JPEG),1)
