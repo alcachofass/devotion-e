@@ -281,9 +281,9 @@ PROTOCOL
 ==============================================================
 */
 
-#define	OLD_PROTOCOL_VERSION	68
+#define	OLD_PROTOCOL_VERSION	71
 // new protocol with UDP spoofing protection:
-#define	NEW_PROTOCOL_VERSION	71
+#define	NEW_PROTOCOL_VERSION	72
 // 1.31 - 67
 
 #define DEFAULT_PROTOCOL_VERSION	OLD_PROTOCOL_VERSION
@@ -1011,6 +1011,7 @@ extern	cvar_t	*com_journal;
 extern	cvar_t	*com_cameraMode;
 extern	cvar_t	*com_protocol;
 extern	qboolean com_protocolCompat;
+extern	cvar_t	*com_homepath;
 
 // both client and server must agree to pause
 extern	cvar_t	*sv_paused;
@@ -1255,6 +1256,7 @@ void	Sys_Init( void );
 void	Sys_QueEvent( int evTime, sysEventType_t evType, int value, int value2, int ptrLength, void *ptr );
 void	Sys_SendKeyEvents( void );
 void	Sys_Sleep( int msec );
+const char *Sys_Basename( char *path );
 char	*Sys_ConsoleInput( void );
 
 void	QDECL Sys_Error( const char *error, ...) __attribute__ ((noreturn, format (printf, 1, 2)));
@@ -1298,10 +1300,17 @@ void	Sys_Mkdir( const char *path );
 FILE	*Sys_FOpen( const char *ospath, const char *mode );
 qboolean Sys_ResetReadOnlyAttribute( const char *ospath );
 
-const char *Sys_Pwd( void );
-const char *Sys_DefaultBasePath( void );
-const char *Sys_DefaultHomePath( void );
+char *Sys_Pwd( void );
+void Sys_SetDefaultInstallPath(const char *path);
+char *Sys_DefaultInstallPath( void );
 const char *Sys_SteamPath( void );
+
+#ifdef __APPLE__
+char    *Sys_DefaultAppPath(void);
+#endif
+
+char *Sys_DefaultHomePath( void );
+const char *Sys_Dirname( char *path );
 
 char **Sys_ListFiles( const char *directory, const char *extension, const char *filter, int *numfiles, qboolean wantsubs );
 void Sys_FreeFileList( char **list );
