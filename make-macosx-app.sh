@@ -43,7 +43,7 @@ if [ "$2" != "" ]; then
 	elif [ "$2" == "ppc" ]; then
 		CURRENT_ARCH="ppc"
 	elif [ "$2" == "arm64" ]; then
-		CURRENT_ARCH="aarch64"
+		CURRENT_ARCH="arm64"
 	else
 		echo "Invalid architecture: $2"
 		echo "Valid architectures are:"
@@ -109,11 +109,11 @@ function symlinkArch()
     fi
 
     if [ "${ISARM}" != "" ]; then
-        if [ ! -L "${DSTFILE}aarch64.${EXT}" ]; then
-            ln -s "${SRCFILE}.${EXT}" "${DSTFILE}aarch64.${EXT}"
+        if [ ! -L "${DSTFILE}arm64.${EXT}" ]; then
+            ln -s "${SRCFILE}.${EXT}" "${DSTFILE}arm64.${EXT}"
         fi
-    elif [ -L "${DSTFILE}aarch64.${EXT}" ]; then
-        rm "${DSTFILE}aarch64.${EXT}"
+    elif [ -L "${DSTFILE}arm64.${EXT}" ]; then
+        rm "${DSTFILE}arm64.${EXT}"
     fi
 
     popd > /dev/null
@@ -123,7 +123,7 @@ SEARCH_ARCHS="																	\
 	x86																			\
 	x86_64																		\
 	ppc																			\
-	aarch64																		\
+	arm64																		\
 "
 
 HAS_LIPO=`command -v lipo`
@@ -158,6 +158,7 @@ IOQ3_CLIENT_ARCHS=""
 IOQ3_SERVER_ARCHS=""
 IOQ3_RENDERER_GL1_ARCHS=""
 IOQ3_RENDERER_GL2_ARCHS=""
+IOQ3_RENDERER_VK_ARCHS=""
 IOQ3_CGAME_ARCHS=""
 IOQ3_GAME_ARCHS=""
 IOQ3_UI_ARCHS=""
@@ -173,6 +174,7 @@ GAME="qagame"
 UI="ui"
 
 RENDERER_OPENGL="renderer_opengl"
+RENDERER_VULKAN="renderer_vulkan"
 
 DEDICATED_NAME="omg_ded"
 
@@ -182,6 +184,7 @@ UI_NAME="${UI}.dylib"
 
 RENDERER_OPENGL1_NAME="${RENDERER_OPENGL}.dylib"
 RENDERER_OPENGL2_NAME="${RENDERER_OPENGL}2.dylib"
+RENDERER_VULKAN_NAME="${RENDERER_VULKAN}.dylib"
 
 ICNSDIR="code/unix"
 ICNS="quake3_flat.icns"
@@ -205,6 +208,7 @@ for ARCH in $SEARCH_ARCHS; do
 	IOQ3_SERVER="${DEDICATED_NAME}.${CURRENT_ARCH}"
 	IOQ3_RENDERER_GL1="${RENDERER_OPENGL}_${CURRENT_ARCH}.dylib"
 	IOQ3_RENDERER_GL2="${RENDERER_OPENGL}2_${CURRENT_ARCH}.dylib"
+	IOQ3_RENDERER_VK="${RENDERER_VULKAN}_${CURRENT_ARCH}.dylib"
 	IOQ3_CGAME="${CGAME}${CURRENT_ARCH}.dylib"
 	IOQ3_GAME="${GAME}${CURRENT_ARCH}.dylib"
 	IOQ3_UI="${UI}${CURRENT_ARCH}.dylib"
@@ -232,6 +236,9 @@ for ARCH in $SEARCH_ARCHS; do
 	fi
 	if [ -e ${BUILT_PRODUCTS_DIR}/${IOQ3_RENDERER_GL2} ]; then
 		IOQ3_RENDERER_GL2_ARCHS="${BUILT_PRODUCTS_DIR}/${IOQ3_RENDERER_GL2} ${IOQ3_RENDERER_GL2_ARCHS}"
+	fi
+	if [ -e ${BUILT_PRODUCTS_DIR}/${IOQ3_RENDERER_VK} ]; then
+		IOQ3_RENDERER_VK_ARCHS="${BUILT_PRODUCTS_DIR}/${IOQ3_RENDERER_VK} ${IOQ3_RENDERER_VK_ARCHS}"
 	fi
 
 	# game
@@ -371,7 +378,7 @@ if [ -n "${MACOSX_DEPLOYMENT_TARGET_PPC}" ] || [ -n "${MACOSX_DEPLOYMENT_TARGET_
 	
 	if [ -n "${MACOSX_DEPLOYMENT_TARGET_ARM64}" ]; then
 	PLIST="${PLIST}
-        <key>aarch64</key>
+        <key>arm64</key>
         <string>${MACOSX_DEPLOYMENT_TARGET_ARM64}</string>"
 	fi
 
@@ -429,7 +436,9 @@ action "${BUNDLEBINDIR}/${DEDICATED_NAME}"				"${IOQ3_SERVER_ARCHS}"
 # renderers
 action "${BUNDLEBINDIR}/${RENDERER_OPENGL1_NAME}"		"${IOQ3_RENDERER_GL1_ARCHS}"
 action "${BUNDLEBINDIR}/${RENDERER_OPENGL2_NAME}"		"${IOQ3_RENDERER_GL2_ARCHS}"
+action "${BUNDLEBINDIR}/${RENDERER_VULKAN_NAME}"		"${IOQ3_RENDERER_VK_ARCHS}"
 symlinkArch "${RENDERER_OPENGL}" "${RENDERER_OPENGL}" "_" "${BUNDLEBINDIR}"
+symlinkArch "${RENDERER_VULKAN}" "${RENDERER_VULKAN}" "_" "${BUNDLEBINDIR}"
 symlinkArch "${RENDERER_OPENGL}2" "${RENDERER_OPENGL}2" "_" "${BUNDLEBINDIR}"
 
 # game

@@ -13,8 +13,12 @@
 COMPILE_PLATFORM=$(shell uname | sed -e 's/_.*//' | tr '[:upper:]' '[:lower:]' | sed -e 's/\//_/g')
 COMPILE_ARCH=$(shell uname -m | sed -e 's/i.86/x86/' | sed -e 's/^arm.*/arm/')
 
-ifeq ($(shell uname -m),arm64)
-  COMPILE_ARCH=aarch64
+#arm64 hack!
+ifeq ($(shell uname -m), arm64)
+  COMPILE_ARCH=arm64
+endif
+ifeq ($(shell uname -m), aarch64)
+  COMPILE_ARCH=arm64
 endif
 
 ifeq ($(COMPILE_PLATFORM),mingw32)
@@ -242,7 +246,7 @@ endif
 ifeq ($(ARCH),arm)
   HAVE_VM_COMPILED = true
 endif
-ifeq ($(ARCH),aarch64)
+ifeq ($(ARCH),arm64)
   HAVE_VM_COMPILED = true
 endif
 
@@ -543,8 +547,8 @@ else
     ARCHEXT = .arm
   endif
 
-  ifeq ($(ARCH),aarch64)
-    ARCHEXT = .aarch64
+  ifeq ($(ARCH),arm64)
+    ARCHEXT = .arm64
   endif
 
   SHLIBEXT = so
@@ -1092,7 +1096,7 @@ ifeq ($(HAVE_VM_COMPILED),true)
   ifeq ($(ARCH),arm)
     Q3OBJ += $(B)/client/vm_armv7l.o
   endif
-  ifeq ($(ARCH),aarch64)
+  ifeq ($(ARCH),arm64)
     Q3OBJ += $(B)/client/vm_aarch64.o
   endif
 endif
@@ -1286,7 +1290,7 @@ ifeq ($(HAVE_VM_COMPILED),true)
   ifeq ($(ARCH),arm)
     Q3DOBJ += $(B)/ded/vm_armv7l.o
   endif
-  ifeq ($(ARCH),aarch64)
+  ifeq ($(ARCH),arm64)
     Q3DOBJ += $(B)/ded/vm_aarch64.o
   endif
 endif
