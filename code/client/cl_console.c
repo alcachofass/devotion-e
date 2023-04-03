@@ -23,10 +23,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "client.h"
 
+// time that it takes for a notify line to fade away
+#define NOTIFY_FADE_TIME 250
+
+// time that console tab blinks when it receives a message
+#define NOTIFY_BLINK_TIME 250
+
 #define  DEFAULT_CONSOLE_WIDTH 78
 #define  MAX_CONSOLE_WIDTH 120
 
-#define  NUM_CON_TIMES  4
+#define  NUM_CON_TIMES  8
 
 #define  CON_TEXTSIZE   65536
 
@@ -665,11 +671,12 @@ static void Con_DrawNotify( void )
 	int		skip;
 	int		currentColorIndex;
 	int		colorIndex;
+	int notifytime = con_notifytime->value * 1000 + 2 * (int)NOTIFY_FADE_TIME;
 
 	currentColorIndex = ColorIndex( COLOR_WHITE );
 	re.SetColor( g_color_table[ currentColorIndex ] );
 
-	v = 0;
+	v = -smallchar_height;
 	for (i= con.current-NUM_CON_TIMES+1 ; i<=con.current ; i++)
 	{
 		if (i < 0)
@@ -678,8 +685,29 @@ static void Con_DrawNotify( void )
 		if (time == 0)
 			continue;
 		time = cls.realtime - time;
-		if ( time >= con_notifytime->value*1000 )
+		if ( time >= notifytime )
 			continue;
+
+		float fade = 2.0f;
+
+		if (notifytime - time < NOTIFY_FADE_TIME * 2.0f) {
+			fade = (notifytime - time) / (float)NOTIFY_FADE_TIME;
+		}
+
+		if (fade > 1.0f) {
+			color_table_alpha( fade - 1.0f );
+		} else {
+			color_table_alpha( 0.0f );
+		}
+
+		re.SetColor( g_color_table[currentColorIndex] );
+
+		if (fade > 1.0f) {
+			v += smallchar_height;
+		} else {
+			v += fade * smallchar_height;
+		}
+
 		text = con.text + (i % con.totallines)*con.linewidth;
 
 		if (cl.snap.ps.pm_type != PM_INTERMISSION && Key_GetCatcher( ) & (KEYCATCH_UI | KEYCATCH_CGAME) ) {
@@ -697,9 +725,13 @@ static void Con_DrawNotify( void )
 			}
 			SCR_DrawSmallChar( cl_conXOffset->integer + con.xadjust + (x+1)*smallchar_width, v, text[x] & 0xff );
 		}
-
-		v += smallchar_height;
 	}
+
+	if (v < 0) {
+		v = 0;
+	}
+
+	color_table_alpha( 1.0f );
 
 	re.SetColor( NULL );
 

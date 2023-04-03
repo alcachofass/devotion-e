@@ -48,7 +48,7 @@ vec4_t		colorMdGrey	= {0.5, 0.5, 0.5, 1};
 vec4_t		colorDkGrey	= {0.25, 0.25, 0.25, 1};
 
 // actually there are 35 colors but we want to use bitmask safely
-const vec4_t g_color_table[ 64 ] = {
+vec4_t g_color_table[ 64 ] = {
 
 	{0.0f, 0.0f, 0.0f, 1.0f},
 	{1.0f, 0.0f, 0.0f, 1.0f},
@@ -196,6 +196,12 @@ vec3_t	bytedirs[NUMVERTEXNORMALS] =
 };
 
 //==============================================================
+
+void	color_table_alpha( float a ) {
+	for (int i = 0 ; i < ARRAY_LEN( g_color_table ) ; ++i) {
+		g_color_table[i][3] = a;
+	}
+}
 
 int		Q_rand( int *seed ) {
 	*seed = (69069 * *seed + 1);
