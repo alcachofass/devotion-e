@@ -845,10 +845,10 @@ char *Sys_BinaryPath(void)
 
 /*
 =================
-Sys_SetDefaultInstallPath
+Sys_SetDefaultBasePath
 =================
 */
-void Sys_SetDefaultInstallPath(const char *path)
+void Sys_SetDefaultBasePath(const char *path)
 {
 	Q_strncpyz(installPath, path, sizeof(installPath));
 }
@@ -856,10 +856,10 @@ void Sys_SetDefaultInstallPath(const char *path)
 
 /*
 =================
-Sys_DefaultInstallPath
+Sys_DefaultBasePath
 =================
 */
-char *Sys_DefaultInstallPath(void)
+const char *Sys_DefaultBasePath(void)
 {
 	if (*installPath)
 		return installPath;
@@ -966,7 +966,7 @@ int main( int argc, const char* argv[] )
 	if ( Sys_ParseArgs( argc, argv ) ) // added this for support
 		return 0;
 	Sys_SetBinaryPath( Sys_Dirname( argv[ 0 ] ) );
-	Sys_SetDefaultInstallPath( DEFAULT_BASEDIR );
+	Sys_SetDefaultBasePath( DEFAULT_BASEDIR );
 
 	// merge the command line, this is kinda silly
 	for ( len = 1, i = 1; i < argc; i++ )
