@@ -141,16 +141,6 @@ if [ "${CURRENT_ARCH}" != "" ]; then
 	SEARCH_ARCHS="${CURRENT_ARCH}"
 fi
 
-# select SDL run-time dylib
-if [ "${MACOSX_DEPLOYMENT_TARGET}" = "10.5" ] \
-  || [ "${MACOSX_DEPLOYMENT_TARGET}" = "10.6" ] \
-  || [ "${MACOSX_DEPLOYMENT_TARGET}" = "10.7" ] \
-  || [ "${MACOSX_DEPLOYMENT_TARGET}" = "10.8" ]; then
-  UNIVERSAL_BINARY=1
-else
-  UNIVERSAL_BINARY=2
-fi
-
 AVAILABLE_ARCHS=""
 
 IOQ3_VERSION=`grep '^VERSION=' Makefile | sed -e 's/.*=\(.*\)/\1/'`
@@ -315,11 +305,7 @@ if [ ! -d "${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}" ]; then
 fi
 
 # copy and generate some application bundle resources
-if [ $UNIVERSAL_BINARY -eq 2 ]; then
-	cp code/libsdl/macosx-ub2/*.dylib "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}"
-else
-	cp code/libsdl/macosx-ub/*.dylib "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}"
-fi
+cp code/libsdl/macosx/*.dylib "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}"
 cp ${ICNSDIR}/${ICNS} "${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/$ICNS" || exit 1;
 echo -n ${PKGINFO} > "${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/PkgInfo" || exit 1;
 

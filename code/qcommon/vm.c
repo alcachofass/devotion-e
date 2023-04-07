@@ -1700,7 +1700,7 @@ static void * QDECL VM_LoadDll( const char *name, vmMainFunc_t *entryPoint, dllS
 
 	Com_sprintf( filename, sizeof( filename ), "%s%c%s" ARCH_STRING DLL_EXT, gamedir, PATH_SEP, name );
 
-	libHandle = FS_LoadLibrary( filename );
+	libHandle = FS_LoadLibrary( filename, qfalse );
 
 	if ( !libHandle ) {
 		Com_Printf( "VM_LoadDLL '%s' failed\n", filename );

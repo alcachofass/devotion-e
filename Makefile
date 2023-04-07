@@ -32,7 +32,7 @@ BUILD_SERVER     = 1
 
 USE_SDL          = 1
 USE_CURL         = 1
-USE_LOCAL_HEADERS= 0
+USE_LOCAL_HEADERS= 1
 USE_SYSTEM_JPEG  = 0
 
 USE_VULKAN       = 1
@@ -71,7 +71,6 @@ endif
 
 ifeq ($(COMPILE_PLATFORM),darwin)
   USE_SDL=1
-  USE_LOCAL_HEADERS=1
 endif
 
 ifeq ($(COMPILE_PLATFORM),cygwin)
@@ -154,8 +153,12 @@ USE_CCACHE=0
 endif
 export USE_CCACHE
 
-ifndef USE_LOCAL_HEADERS
-USE_LOCAL_HEADERS=1
+ifndef USE_OPENAL
+USE_OPENAL=1
+endif
+
+ifndef USE_OPENAL_DLOPEN
+USE_OPENAL_DLOPEN=1
 endif
 
 ifndef USE_CURL
@@ -229,10 +232,15 @@ INSTALL=install
 MKDIR=mkdir -p
 
 ifneq ($(call bin_path, $(PKG_CONFIG)),)
+  OPENAL_INCLUDE ?= $(shell $(PKG_CONFIG) --silence-errors --cflags-only-I openal)
+  OPENAL_LIBS ?= $(shell $(PKG_CONFIG) --silence-errors --libs openal)
   SDL_INCLUDE ?= $(shell $(PKG_CONFIG) --silence-errors --cflags-only-I sdl2)
   SDL_LIBS ?= $(shell $(PKG_CONFIG) --silence-errors --libs sdl2)
   X11_INCLUDE ?= $(shell $(PKG_CONFIG) --silence-errors --cflags-only-I x11)
   X11_LIBS ?= $(shell $(PKG_CONFIG) --silence-errors --libs x11)
+else
+  # assume they're in the system default paths (no -I or -L needed)
+  OPENAL_LIBS ?= -lopenal
 endif
 
 # supply some reasonable defaults for SDL/X11?
@@ -377,6 +385,13 @@ ifdef MINGW
   BASE_CFLAGS += -Wno-unused-result -fvisibility=hidden
   BASE_CFLAGS += -ffunction-sections -flto
 
+  ifeq ($(USE_OPENAL),1)
+    BASE_CFLAGS += $(OPENAL_INCLUDE)
+    ifneq ($(USE_OPENAL_DLOPEN),1)
+      CLIENT_LDFLAGS += $(OPENAL_LIBS)
+    endif
+  endif
+
   ifeq ($(ARCH),x86_64)
     ARCHEXT = .x64
     BASE_CFLAGS += -m64
@@ -447,81 +462,18 @@ ifeq ($(COMPILE_PLATFORM),darwin)
 
   LDFLAGS =
 
-  # Default minimum Mac OS X version
-  ifeq ($(MACOSX_VERSION_MIN),)
-    MACOSX_VERSION_MIN=10.9
-    ifneq ($(findstring $(ARCH),ppc ppc64),)
-      MACOSX_VERSION_MIN=10.5
+  ifeq ($(USE_OPENAL),1)
+    ifneq ($(USE_LOCAL_HEADERS),1)
+      BASE_CFLAGS += -I/System/Library/Frameworks/OpenAL.framework/Headers
     endif
-    ifeq ($(ARCH),x86)
-      MACOSX_VERSION_MIN=10.6
-    endif
-    ifeq ($(ARCH),x86_64)
-      # trying to find default SDK version is hard
-      # macOS 10.15 requires -sdk macosx but 10.11 doesn't support it
-      # macOS 10.6 doesn't have -show-sdk-version
-      DEFAULT_SDK=$(shell xcrun -sdk macosx -show-sdk-version 2> /dev/null)
-      ifeq ($(DEFAULT_SDK),)
-        DEFAULT_SDK=$(shell xcrun -show-sdk-version 2> /dev/null)
-      endif
-      ifeq ($(DEFAULT_SDK),)
-        $(error Error: Unable to determine macOS SDK version.  On macOS 10.6 to 10.8 run: make MACOSX_VERSION_MIN=10.6  On macOS 10.9 or later run: make MACOSX_VERSION_MIN=10.9 );
-      endif
-
-      ifneq ($(findstring $(DEFAULT_SDK),10.6 10.7 10.8),)
-        MACOSX_VERSION_MIN=10.6
-      else
-        MACOSX_VERSION_MIN=10.9
-      endif
-    endif
-    ifeq ($(ARCH),arm64)
-      MACOSX_VERSION_MIN=11.0
+    ifneq ($(USE_OPENAL_DLOPEN),1)
+      CLIENT_LDFLAGS += -framework OpenAL
     endif
   endif
-
-  MACOSX_MAJOR=$(shell echo $(MACOSX_VERSION_MIN) | cut -d. -f1)
-  MACOSX_MINOR=$(shell echo $(MACOSX_VERSION_MIN) | cut -d. -f2)
-  ifeq ($(shell test $(MACOSX_MINOR) -gt 9; echo $$?),0)
-    # Multiply and then remove decimal. 10.10 -> 101000.0 -> 101000
-    MAC_OS_X_VERSION_MIN_REQUIRED=$(shell echo "$(MACOSX_MAJOR) * 10000 + $(MACOSX_MINOR) * 100" | bc | cut -d. -f1)
-  else
-    # Multiply by 100 and then remove decimal. 10.7 -> 1070.0 -> 1070
-    MAC_OS_X_VERSION_MIN_REQUIRED=$(shell echo "$(MACOSX_VERSION_MIN) * 100" | bc | cut -d. -f1)
-  endif
-
-  LDFLAGS += -mmacosx-version-min=$(MACOSX_VERSION_MIN)
-  BASE_CFLAGS += -mmacosx-version-min=$(MACOSX_VERSION_MIN) \
-                 -DMAC_OS_X_VERSION_MIN_REQUIRED=$(MAC_OS_X_VERSION_MIN_REQUIRED)
 
   ifeq ($(USE_LOCAL_HEADERS),1)
-    ifeq ($(shell test $(MAC_OS_X_VERSION_MIN_REQUIRED) -ge 1090; echo $$?),0)
-      # Universal Binary 2 - for running on macOS 10.9 or later
-      # x86_64 (10.9 or later), arm64 (11.0 or later)
-      MACLIBSDIR=$(MOUNT_DIR)/libsdl/macosx-ub2
-      BASE_CFLAGS += -I$(SDLHDIR)/include
-    else
-      # Universal Binary - for running on Mac OS X 10.5 or later
-      # ppc (10.5/10.6), x86 (10.6 or later), x86_64 (10.6 or later)
-      #
-      # x86/x86_64 on 10.5 will run the ppc build.
-      #
-      # SDL 2.0.1,  last with Mac OS X PowerPC
-      # SDL 2.0.4,  last with Mac OS X 10.5 (x86/x86_64)
-      # SDL 2.0.22, last with Mac OS X 10.6 (x86/x86_64)
-      #
-      # code/libs/macosx-ub/libSDL2-2.0.0.dylib contents
-      # - ppc build is SDL 2.0.1 with a header change so it compiles
-      # - x86/x86_64 build are SDL 2.0.22
-      MACLIBSDIR=$(MOUNT_DIR)/libsdl/macosx-ub
-      ifneq ($(findstring $(ARCH),ppc ppc64),)
-        BASE_CFLAGS += -I$(SDLHDIR)/include-macppc
-      else
-        BASE_CFLAGS += -I$(SDLHDIR)/include-2.0.22
-      endif
-    endif
-
-    # We copy sdlmain before ranlib'ing it so that subversion doesn't think
-    #  the file has been modified by each build.
+    MACLIBSDIR=$(MOUNT_DIR)/libsdl/macosx
+    BASE_CFLAGS += -I$(SDLHDIR)/include
     CLIENT_LDFLAGS += $(MACLIBSDIR)/libSDL2-2.0.0.dylib
     CLIENT_EXTRA_FILES += $(MACLIBSDIR)/libSDL2-2.0.0.dylib
   else
@@ -701,6 +653,13 @@ endif
 
 ifndef SHLIBNAME
   SHLIBNAME=$(ARCH).$(SHLIBEXT)
+endif
+
+ifeq ($(USE_OPENAL),1)
+  BASE_CFLAGS += -DUSE_OPENAL
+  ifeq ($(USE_OPENAL_DLOPEN),1)
+    BASE_CFLAGS += -DUSE_OPENAL_DLOPEN
+  endif
 endif
 
 ifeq ($(USE_CODEC_VORBIS),1)
@@ -1056,6 +1015,9 @@ Q3OBJ = \
   $(B)/client/snd_codec.o \
   $(B)/client/snd_codec_wav.o \
   $(B)/client/snd_codec_ogg.o \
+  \
+  $(B)/client/qal.o \
+  $(B)/client/snd_openal.o \
   \
   $(B)/client/sv_bot.o \
   $(B)/client/sv_ccmds.o \

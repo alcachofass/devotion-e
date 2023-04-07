@@ -80,6 +80,8 @@ extern byte *dma_buffer2;
 
 #define MAX_DOPPLER_SCALE 50.0f //arbitrary
 
+#define THIRD_PERSON_THRESHOLD_SQ (48.0f*48.0f)
+
 typedef struct loopSound_s {
 	vec3_t		origin;
 	vec3_t		velocity;
@@ -234,3 +236,17 @@ extern sfx_t *sfxScratchPointer;
 extern int	   sfxScratchIndex;
 
 qboolean S_Base_Init( soundInterface_t *si );
+
+// OpenAL stuff
+typedef enum
+{
+	SRCPRI_AMBIENT = 0,	// Ambient sound effects
+	SRCPRI_ENTITY,			// Entity sound effects
+	SRCPRI_ONESHOT,			// One-shot sounds
+	SRCPRI_LOCAL,				// Local sounds
+	SRCPRI_STREAM				// Streams (music, cutscenes)
+} alSrcPriority_t;
+
+typedef int srcHandle_t;
+
+qboolean S_AL_Init( soundInterface_t *si );

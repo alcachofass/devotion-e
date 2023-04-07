@@ -857,7 +857,7 @@ const char *FS_GetGamePath( void );
 qboolean FS_StripExt( char *filename, const char *ext );
 qboolean FS_AllowedExtension( const char *fileName, qboolean allowPk3s, const char **ext );
 
-void *FS_LoadLibrary( const char *name );
+void *FS_LoadLibrary( const char *name, qboolean useSystemLib );
 
 typedef qboolean ( *fnamecallback_f )( const char *filename, int length );
 

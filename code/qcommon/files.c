@@ -694,6 +694,14 @@ qboolean FS_AllowedExtension( const char *fileName, qboolean allowPk3s, const ch
 	const char *e;
 	int i, n;
 
+#ifdef __APPLE__
+	// Allow system frameworks without dylib extensions
+	// i.e., /System/Library/Frameworks/OpenAL.framework/OpenAL
+	if ( strncmp( fileName, "/System/Library/Frameworks/", 27 ) == 0 ) {
+		return qfalse;
+	}
+#endif
+
 	e = strrchr( fileName, '.' );
 
 	// check for unix '.so.[0-9]' pattern
@@ -5601,7 +5609,7 @@ FS_LoadLibrary
 Tries to load libraries within known searchpaths
 =================
 */
-void *FS_LoadLibrary( const char *name )
+void *FS_LoadLibrary( const char *name, qboolean useSystemLib )
 {
 	const searchpath_t *sp = fs_searchpaths;
 	void *libHandle = NULL;
@@ -5611,6 +5619,12 @@ void *FS_LoadLibrary( const char *name )
 	fn = FS_BuildOSPath( Sys_Pwd(), name, NULL );
 	libHandle = Sys_LoadLibrary( fn );
 #endif
+
+	if(useSystemLib)
+	{
+		Com_Printf("Trying to load \"%s\"...\n", name);
+		libHandle = Sys_LoadLibrary(name);
+	}
 
 	while ( !libHandle && sp ) {
 		while ( sp && ( sp->policy != DIR_STATIC || !sp->dir ) ) {
