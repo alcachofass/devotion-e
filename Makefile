@@ -465,9 +465,7 @@ ifeq ($(COMPILE_PLATFORM),darwin)
   ifeq ($(USE_OPENAL),1)
     ifneq ($(USE_LOCAL_HEADERS),1)
       BASE_CFLAGS += -I/System/Library/Frameworks/OpenAL.framework/Headers
-    endif
-    ifneq ($(USE_OPENAL_DLOPEN),1)
-      CLIENT_LDFLAGS += -framework OpenAL
+      CLIENT_LDFLAGS += -F/Library/Frameworks -framework OpenAL
     endif
   endif
 
