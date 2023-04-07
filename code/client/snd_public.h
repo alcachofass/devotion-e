@@ -68,3 +68,5 @@ void S_DisplayFreeMemory(void);
 void S_ClearSoundBuffer( void );
 
 void SNDDMA_Activate( void );
+
+qboolean S_AL_Init( soundInterface_t *si )
