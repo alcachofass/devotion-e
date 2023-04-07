@@ -1434,30 +1434,4 @@ typedef enum _flag_status {
 #define LERP( a, b, w ) ( ( a ) * ( 1.0f - ( w ) ) + ( b ) * ( w ) )
 #define LUMA( red, green, blue ) ( 0.2126f * ( red ) + 0.7152f * ( green ) + 0.0722f * ( blue ) )
 
-
-// Interface between Q3 sound "api" and the sound backend
-typedef struct
-{
-	void (*Shutdown)(void);
-	void (*StartSound)( const vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx );
-	void (*StartLocalSound)( sfxHandle_t sfx, int channelNum );
-	void (*StartBackgroundTrack)( const char *intro, const char *loop );
-	void (*StopBackgroundTrack)( void );
-	void (*RawSamples)(int samples, int rate, int width, int channels, const byte *data, float volume);
-	void (*StopAllSounds)( void );
-	void (*ClearLoopingSounds)( qboolean killall );
-	void (*AddLoopingSound)( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx );
-	void (*AddRealLoopingSound)( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx );
-	void (*StopLoopingSound)(int entityNum );
-	void (*Respatialize)( int entityNum, const vec3_t origin, vec3_t axis[3], int inwater );
-	void (*UpdateEntityPosition)( int entityNum, const vec3_t origin );
-	void (*Update)( int msec );
-	void (*DisableSounds)( void );
-	void (*BeginRegistration)( void );
-	sfxHandle_t (*RegisterSound)( const char *sample, qboolean compressed );
-	void (*ClearSoundBuffer)( void );
-	void (*SoundInfo)( void );
-	void (*SoundList)( void );
-} soundInterface_t;
-
 #endif	// __Q_SHARED_H
