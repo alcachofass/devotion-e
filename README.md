@@ -1,6 +1,6 @@
 # OmegAe
 
-[![Build](https://github.com/EddieBrrrock/OmegAe/actions/workflows/build.yml/badge.svg)](https://github.com/EddieBrrrock/OmegAe/actions/workflows/build.yml)
+[![build](../../workflows/build/badge.svg)](../../actions?query=workflow%3Abuild)
 
 This is a modern OpenArena engine aimed to be fast, secure and compatible with all existing OA mods.
 It is based on last non-SDL source dump of [quake3e](https://github.com/ec-/Quake3e) with latest upstream fixes applied.
@@ -71,10 +71,6 @@ Based on classic OpenGL renderers from [idq3](https://github.com/id-Software/Qua
 Performance is usually greater or equal to other opengl1 renderers
 
 ## [Build Instructions](BUILD.md)
-
-## Contacts
-
-Discord channel: https://discordapp.com/invite/X3Exs4C
 
 ## Links
 
