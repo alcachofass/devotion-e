@@ -1,9 +1,9 @@
 # OmegAe
 
-[![build](../../workflows/build/badge.svg)](../../actions?query=workflow%3Abuild) * <a href="https://discord.com/invite/X3Exs4C"><img src="https://img.shields.io/discord/314456230649135105?color=7289da&logo=discord&logoColor=white" alt="Discord server" /></a>
+[![Build](https://github.com/EddieBrrrock/OmegAe/actions/workflows/build.yml/badge.svg)](https://github.com/EddieBrrrock/OmegAe/actions/workflows/build.yml)
 
-This is a modern Quake III Arena engine aimed to be fast, secure and compatible with all existing Q3A mods.
-It is based on last non-SDL source dump of [ioquake3](https://github.com/ioquake/ioq3) with latest upstream fixes applied.
+This is a modern OpenArena engine aimed to be fast, secure and compatible with all existing OA mods.
+It is based on last non-SDL source dump of [quake3e](https://github.com/ec-/Quake3e) with latest upstream fixes applied.
 
 Go to [Releases](../../releases) section to download latest binaries for your platform or follow [Build Instructions](#build-instructions)
 
@@ -22,6 +22,8 @@ Go to [Releases](../../releases) section to download latest binaries for your pl
 * raised filesystem limits (up to 20,000 maps can be handled in a single directory)
 * reworked Zone memory allocator, no more out-of-memory errors
 * non-intrusive support for SDL2 backend (video, audio, input), selectable at compile time
+* OpenAL sound API support (multiple speaker support and better sound quality)
+* Optional Ogg Vorbis support
 * tons of bug fixes and other improvements
 
 ## Vulkan renderer
