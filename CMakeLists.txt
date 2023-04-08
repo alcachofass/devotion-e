@@ -6,7 +6,7 @@ SET(CNAME "quake3e")
 SET(DNAME "quake3e.ded")
 
 SET(RENDERER_PREFIX ${CNAME})
-SET(RENDERER_DEFAULT opengl) # valid options: opengl, vulkan, opengl2
+SET(RENDERER_DEFAULT opengl) # valid options: opengl, vulkan
 
 OPTION(USE_SDL "" ON)
 OPTION(USE_CURL "" ON)

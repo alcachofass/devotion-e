@@ -1,4 +1,4 @@
-# Quake3e
+# OmegAe
 
 [![build](../../workflows/build/badge.svg)](../../actions?query=workflow%3Abuild) * <a href="https://discord.com/invite/X3Exs4C"><img src="https://img.shields.io/discord/314456230649135105?color=7289da&logo=discord&logoColor=white" alt="Discord server" /></a>
 
@@ -67,10 +67,6 @@ Based on classic OpenGL renderers from [idq3](https://github.com/id-Software/Qua
 * bloom reflection post-processing effect
 
 Performance is usually greater or equal to other opengl1 renderers
-
-## OpenGL2 renderer
-
-Original ioquake3 renderer, performance is very poor on non-nvidia systems, unmaintained
 
 ## [Build Instructions](BUILD.md)
 
