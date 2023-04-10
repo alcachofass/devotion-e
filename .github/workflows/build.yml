@@ -250,7 +250,7 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x86_64]
-        cc: [clang]
+        cc: [gcc]
         btype: [Release, Debug]
         include:
           - btype: Release
