@@ -105,11 +105,13 @@ jobs:
     - uses: microsoft/setup-msbuild@v1.1.3
 
     - uses: actions/checkout@v3.1.0
+      if: false
       with:
         submodules: recursive
 
     - name: Build
       #if: ${{ github.event_name != 'release' || matrix.btype != 'Debug' }} # skip Debug configuration in Release build
+      if: false
       run: |
         mkdir bin
 
@@ -130,6 +132,7 @@ jobs:
         msbuild code\win32\msvc2017\quake3e.vcxproj -p:TargetName=omega,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }},UseWasapi=USE_WASAPI=0 -t:Clean
 
     - uses: actions/upload-artifact@v3.1.1
+      if: false
       #if: ${{ matrix.btype == 'release' }}
       with:
         name: windows-msvc-${{ matrix.pkg_suffix }}
