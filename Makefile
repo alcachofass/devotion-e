@@ -28,7 +28,6 @@ ifeq ($(COMPILE_PLATFORM),mingw32)
 endif
 
 BUILD_CLIENT     = 1
-BUILD_SERVER     = 1
 
 USE_SDL          = 1
 USE_CURL         = 1
@@ -40,6 +39,10 @@ USE_OPENGL       = 1
 USE_OPENGL_API   = 1
 USE_VULKAN_API   = 1
 USE_RENDERER_DLOPEN = 1
+
+ifndef BUILD_SERVER
+BUILD_SERVER=0
+endif
 
 # valid options: opengl, vulkan
 RENDERER_DEFAULT = opengl
