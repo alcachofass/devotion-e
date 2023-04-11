@@ -357,7 +357,7 @@ jobs:
         uses: actions/download-artifact@v3.0.1
 
       - name: Create archive
-        run: 7z a -r ${{ matrix.artifact_name }} ./${{ matrix.artifact_dir }}/*
+        run: 7z a -r ${{ matrix.artifact_name }} ./${{ matrix.artifact_dir }}
 
       - name: Upload archive
         uses: "svenstaro/upload-release-action@latest"
