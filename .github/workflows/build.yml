@@ -287,16 +287,16 @@ jobs:
 
       - name: Create binary archives
         run: |
-          7z a -r omegae-linux-x86.zip           ./linux-x86/*
-          7z a -r omegae-linux-x86_64.zip         ./linux-x86_64/*
-          7z a -r omegae-windows-mingw-x86.zip    ./windows-mingw-x86/*
-          7z a -r omegae-windows-mingw-x86_64.zip ./windows-mingw-x86_64/*
-          7z a -r omegae-windows-msvc-x86.zip     ./windows-msvc-x86/*
-          7z a -r omegae-windows-msvc-x86_64.zip  ./windows-msvc-x86_64/*
-          7z a -r omegae-windows-msvc-arm64.zip   ./windows-msvc-arm64/*
-          7z a -r omegae-macos-x86_64.zip         ./macos-x86_64/*
-#         7z a -r omegae-linux-aarch64.zip  ./linux-aarch64/*
-#         7z a -r omegae-linux-armv7.zip    ./linux-armv7/*
+          7z a -r release-linux-x86.zip           ./linux-x86/*
+          7z a -r release-linux-x86_64.zip        ./linux-x86_64/*
+          7z a -r release-mingw32-x86.zip         ./windows-mingw-x86/*
+          7z a -r release-mingw64-x86_64.zip      ./windows-mingw-x86_64/*
+          7z a -r release-darwin-x86_64.zip       ./macos-x86_64/*
+#         7z a -r quake3e-windows-msvc-x86.zip    ./windows-msvc-x86/*
+#         7z a -r quake3e-windows-msvc-x86_64.zip ./windows-msvc-x86_64/*
+#         7z a -r quake3e-windows-msvc-arm64.zip  ./windows-msvc-arm64/*
+#         7z a -r quake3e-linux-aarch64.zip  ./linux-aarch64/*
+#         7z a -r quake3e-linux-armv7.zip    ./linux-armv7/*
 
       - name: Create latest build
         uses: marvinpinto/action-automatic-releases@latest
@@ -323,18 +323,18 @@ jobs:
           #  artifact_name: quake3e-linux-armv7.zip
 
           - artifact_dir: linux-x86
-            artifact_name: omegae-linux-x86.zip
+            artifact_name: omega-engine-linux-x86.zip
 
           - artifact_dir: linux-x86_64
-            artifact_name: omegae-linux-x86_64.zip
+            artifact_name: omega-engine-linux-x86_64.zip
 
           - artifact_dir: windows-mingw-x86
 #           artifact_name: quake3e-windows-mingw-x86.zip
-            artifact_name: omegae-windows-x86.zip 
+            artifact_name: omega-engine-windows-x86.zip 
 
           - artifact_dir: windows-mingw-x86_64
 #           artifact_name: quake3e-windows-mingw-x86_64.zip
-            artifact_name: omegae-windows-x86_64.zip
+            artifact_name: omega-engine-windows-x86_64.zip
 
 #         - artifact_dir: windows-msvc-x86
 #           artifact_name: quake3e-windows-msvc-x86.zip
@@ -342,12 +342,12 @@ jobs:
 #         - artifact_dir: windows-msvc-x86_64
 #           artifact_name: quake3e-windows-msvc-x86_64.zip
 
-          - artifact_dir: windows-msvc-arm64
+#         - artifact_dir: windows-msvc-arm64
 #           artifact_name: quake3e-windows-msvc-arm64.zip
-            artifact_name: omegae-windows-arm64.zip
+#           artifact_name: quake3e-windows-arm64.zip
 
           - artifact_dir: macos-x86_64
-            artifact_name: omegae-macos-x86_64.zip
+            artifact_name: omega-engine-macos-x86_64.zip
 
     steps:
       - name: Download Artifacts
