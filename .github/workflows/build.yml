@@ -305,7 +305,7 @@ jobs:
     - name: Build
       if: ${{ github.event_name != 'release' || matrix.btype != 'Debug' }} # skip Debug configuration in Release build
       run: |
-        make ${{ matrix.rule }} -j 4 CC=${{ matrix.cc }} DESTDIR=bin INSTALL=ginstall BUILD_SERVER=0 STRIP=echo
+        make ${{ matrix.rule }} -j 4 ARCH=${{ matrix.arch }} CC=${{ matrix.cc }} DESTDIR=bin INSTALL=ginstall BUILD_SERVER=0 STRIP=echo
 
     - uses: actions/upload-artifact@v3.1.1
       if: matrix.cc == 'clang' && matrix.btype == 'release'
