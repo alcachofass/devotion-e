@@ -40,7 +40,6 @@ fi
 #if [ -d build/release-release-x86_64 ]; then
 #	rm -r build/release-darwin-x86_64
 #fi
-(PLATFORM=darwin ARCH=x86_64 CFLAGS=$X86_64_CFLAGS MACOSX_VERSION_MIN=$X86_64_MACOSX_VERSION_MIN make -j$NCPU) || exit 1;
 
 echo;echo
 
@@ -48,7 +47,6 @@ echo;echo
 #if [ -d build/release-release-arm64 ]; then
 #	rm -r build/release-darwin-arm64
 #fi
-(PLATFORM=darwin ARCH=arm64 CFLAGS=$ARM64_CFLAGS MACOSX_VERSION_MIN=$ARM64_MACOSX_VERSION_MIN make -j$NCPU) || exit 1;
 
 echo
 

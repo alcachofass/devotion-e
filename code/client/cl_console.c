@@ -747,16 +747,16 @@ static void Con_DrawNotify( void )
 
 		if (chat_team)
 		{
-			SCR_DrawBigString( SMALLCHAR_WIDTH, v, "say_team:", 1.0f, qfalse );
+			SCR_DrawBigString( SMALLCHAR_WIDTH, v + SMALLCHAR_HEIGHT, "say_team:", 1.0f, qfalse );
 			skip = 10;
 		}
 		else
 		{
-			SCR_DrawBigString( SMALLCHAR_WIDTH, v, "say:", 1.0f, qfalse );
+			SCR_DrawBigString( SMALLCHAR_WIDTH, v + SMALLCHAR_HEIGHT, "say:", 1.0f, qfalse );
 			skip = 5;
 		}
 
-		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v,
+		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v + SMALLCHAR_HEIGHT,
 			SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue, qtrue );
 	}
 }
