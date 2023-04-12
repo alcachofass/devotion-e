@@ -47,8 +47,8 @@ endif
 # valid options: opengl, vulkan
 RENDERER_DEFAULT = opengl
 
-CNAME            = omega
-DNAME            = omg_ded
+CNAME            = devotion
+DNAME            = dq3_ded
 
 RENDERER_PREFIX  = renderer
 
