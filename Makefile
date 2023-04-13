@@ -29,7 +29,6 @@ endif
 
 BUILD_CLIENT     = 1
 
-USE_SDL          = 1
 USE_CURL         = 1
 USE_LOCAL_HEADERS= 1
 USE_SYSTEM_JPEG  = 0
@@ -42,6 +41,10 @@ USE_RENDERER_DLOPEN = 1
 
 ifndef BUILD_SERVER
 BUILD_SERVER=0
+endif
+
+ifndef USE_SDL
+USE_SDL=1
 endif
 
 # valid options: opengl, vulkan
@@ -86,9 +89,11 @@ export PLATFORM
 
 ifeq ($(PLATFORM),mingw32)
   MINGW=1
+  USE_SDL=0
 endif
 ifeq ($(PLATFORM),mingw64)
   MINGW=1
+  USE_SDL=0
 endif
 
 ifeq ($(COMPILE_ARCH),i86pc)
