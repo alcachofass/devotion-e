@@ -72,7 +72,7 @@ jobs:
     - uses: actions/upload-artifact@v3.1.1
       if: matrix.cc == 'gcc' && matrix.btype == 'release'
       with:
-        name: release-${{ matrix.msystem }}-${{ matrix.arch }}
+        name: release-mingw64-${{ matrix.arch }}
         path: bin
         if-no-files-found: error
         retention-days: 5
