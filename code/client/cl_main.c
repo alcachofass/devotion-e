@@ -4054,7 +4054,7 @@ void CL_Init( void ) {
 	if ( cl_guidServerUniq->integer ) {
 		if ( clc.state >= CA_CONNECTING ) {
 			const char *serverString = NET_AdrToStringwPort( clc.serverAddress );
-			CL_UpdateGUID( serverString, strlen( serverString );
+			CL_UpdateGUID( serverString, strlen( serverString ) );
 		}
 	} else {
 		CL_UpdateGUID( NULL, 0 );
