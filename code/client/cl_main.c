@@ -4051,14 +4051,13 @@ void CL_Init( void ) {
 	CL_GenerateQKey();
 #endif
 	Cvar_Get( "cl_guid", "", CVAR_USERINFO | CVAR_ROM | CVAR_PROTECTED );
-	if ( cl_guidServerUniq->integer ) {
-		if ( clc.state >= CA_CONNECTING ) {
-			const char *serverString = NET_AdrToStringwPort( clc.serverAddress );
+	if ( cl_guidServerUniq->integer )
+		if ( cls.state >= CA_CONNECTING ) {
+			const char *serverString = NET_AdrToStringwPort( &clc.serverAddress );
 			CL_UpdateGUID( serverString, strlen( serverString ) );
 		}
-	} else {
+	else
 		CL_UpdateGUID( NULL, 0 );
-	}
 
 	Com_Printf( "----- Client Initialization Complete -----\n" );
 }
