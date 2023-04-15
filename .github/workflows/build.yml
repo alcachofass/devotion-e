@@ -32,11 +32,11 @@ jobs:
         btype: [Release, Debug]
         include:
           - arch: x86
-            msystem: MINGW32
+            msystem: mingw32
             prefix: mingw-w64-i686
 
           - arch: x86_64
-            msystem: MINGW64
+            msystem: mingw64
             prefix: mingw-w64-x86_64
 
           - btype: Release
@@ -125,7 +125,7 @@ jobs:
     - uses: actions/upload-artifact@v3.1.1
       if: matrix.cc == 'gcc' && matrix.btype == 'release'
       with:
-        name: linux-${{ matrix.arch }}
+        name: release-linux-${{ matrix.arch }}
         path: bin
         if-no-files-found: error
         retention-days: 5
@@ -163,7 +163,7 @@ jobs:
     - uses: actions/upload-artifact@v3.1.1
       if: matrix.cc == 'gcc' && matrix.btype == 'release'
       with:
-        name: macos-${{ matrix.arch }}
+        name: release-darwin-${{ matrix.arch }}
         path: bin
         if-no-files-found: error
         retention-days: 5
@@ -178,11 +178,11 @@ jobs:
 
       - name: Create binary archives
         run: |
-          7z a -r devotion-engine-linux-x86.zip           ./linux-x86/*
-          7z a -r devotion-engine-linux-x86_64.zip         ./linux-x86_64/*
-          7z a -r devotion-engine-windows-mingw-x86.zip    ./windows-mingw-x86/*
-          7z a -r devotion-engine-windows-mingw-x86_64.zip ./windows-mingw-x86_64/*
-          7z a -r devotion-engine-macos-x86_64.zip         ./macos-x86_64/*
+          7z a -r omega-engine-linux-x86.zip      ./release-linux-x86
+          7z a -r omega-engine-linux-x86_64.zip   ./release-linux-x86_64
+          7z a -r omega-engine-windows-x86.zip    ./release-mingw32-x86
+          7z a -r omega-engine-windows-x86_64.zip ./release-mingw64-x86_64
+          7z a -r omega-engine-macos-x86_64.zip   ./release-darwin-x86_64
 
       - name: Create latest build
         uses: marvinpinto/action-automatic-releases@latest
@@ -193,41 +193,3 @@ jobs:
           title: Development Build
           files: |
             *.zip
-
-  update-release:
-    if: ${{ github.event_name == 'release' }}
-    needs: [windows-msys, ubuntu-x86, macos-x86]
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - artifact_dir: linux-x86
-            artifact_name: devotion-engine-linux-x86.zip
-
-          - artifact_dir: linux-x86_64
-            artifact_name: devotion-engine-linux-x86_64.zip
-
-          - artifact_dir: windows-mingw-x86
-            artifact_name: devotion-engine-windows-x86.zip 
-
-          - artifact_dir: windows-mingw-x86_64
-            artifact_name: devotion-engine-windows-x86_64.zip
-
-          - artifact_dir: macos-x86_64
-            artifact_name: devotion-engine-macos-x86_64.zip
-
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3.0.1
-
-      - name: Create archive
-        run: 7z a -r ${{ matrix.artifact_name }} ./${{ matrix.artifact_dir }}/*
-
-      - name: Upload archive
-        uses: "svenstaro/upload-release-action@latest"
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref }}
-          overwrite: true
-          file: ${{ matrix.artifact_name }}
