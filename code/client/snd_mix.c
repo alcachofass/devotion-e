@@ -344,7 +344,7 @@ static void S_TransferPaintBuffer( int endtime, byte *buffer )
 		p = (int *) paintbuffer;
 		count = (endtime - s_paintedtime) * dma.channels;
 		out_mask = dma.samples - 1; 
-		out_idx = ( s_paintedtime * dma.channels ) & out_mask;
+		out_idx = ( (unsigned int)s_paintedtime * dma.channels ) & out_mask;
 		step = 3 - dma.channels;
 
 		if ( dma.samplebits == 32 && dma.isfloat )
