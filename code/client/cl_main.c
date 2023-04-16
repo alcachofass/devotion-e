@@ -1136,21 +1136,17 @@ update cl_guid using QKEY_FILE and optional prefix
 */
 static void CL_UpdateGUID( const char *prefix, int prefix_len )
 {
-#ifdef USE_Q3KEY
 	fileHandle_t f;
 	int len;
 
 	len = FS_SV_FOpenFileRead( QKEY_FILE, &f );
 	FS_FCloseFile( f );
 
-	if( len != QKEY_SIZE )
+	if( len != QKEY_SIZE ) 
 		Cvar_Set( "cl_guid", "" );
 	else
 		Cvar_Set( "cl_guid", Com_MD5File( QKEY_FILE, QKEY_SIZE,
 			prefix, prefix_len ) );
-#else
-	Cvar_Set( "cl_guid", Com_MD5Buf( &cl_cdkey[0], sizeof(cl_cdkey), prefix, prefix_len));
-#endif
 }
 
 
@@ -1284,7 +1280,11 @@ qboolean CL_Disconnect( qboolean showMainMenu ) {
 	// not connected to a pure server anymore
 	cl_connectedToPureServer = 0;
 
-	CL_UpdateGUID( NULL, 0 );
+	if ( cl_guidServerUniq->integer ) {
+		Cvar_Set( "cl_guid", "" );
+	} else {
+		CL_UpdateGUID( NULL, 0 );
+	}
 
 	// Cmd_RemoveCommand( "callvote" );
 	Cmd_RemoveCgameCommands();
@@ -1640,10 +1640,7 @@ static void CL_Connect_f( void ) {
 
 	Com_Printf( "%s resolved to %s\n", cls.servername, serverString );
 
-	if ( cl_guidServerUniq->integer )
-		CL_UpdateGUID( serverString, strlen( serverString ) );
-	else
-		CL_UpdateGUID( NULL, 0 );
+	CL_UpdateGUID( NULL, 0 );
 
 	// if we aren't playing on a lan, we need to authenticate
 	// with the cd key
@@ -3631,7 +3628,6 @@ test to see if a valid QKEY_FILE exists.  If one does not, try to generate
 it by filling it with 2048 bytes of random data.
 ===============
 */
-#ifdef USE_Q3KEY
 static void CL_GenerateQKey(void)
 {
 	int len = 0;
@@ -3664,7 +3660,6 @@ static void CL_GenerateQKey(void)
 		Com_Printf( "QKEY generated\n" );
 	}
 }
-#endif
 
 
 /*
@@ -4043,9 +4038,8 @@ void CL_Init( void ) {
 	Cmd_AddCommand( "modelist", CL_ModeList_f );
 
 	Cvar_Set( "cl_running", "1" );
-#ifdef USE_MD5
+
 	CL_GenerateQKey();
-#endif
 	Cvar_Get( "cl_guid", "", CVAR_USERINFO | CVAR_ROM | CVAR_PROTECTED );
 	CL_UpdateGUID( NULL, 0 );
 
