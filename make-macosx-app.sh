@@ -165,7 +165,7 @@ UI="ui"
 RENDERER_OPENGL="renderer_opengl"
 RENDERER_VULKAN="renderer_vulkan"
 
-DEDICATED_NAME="omg_ded"
+DEDICATED_NAME="dq3_ded"
 
 CGAME_NAME="${CGAME}.dylib"
 GAME_NAME="${GAME}.dylib"
@@ -176,13 +176,13 @@ RENDERER_VULKAN_NAME="${RENDERER_VULKAN}.dylib"
 
 ICNSDIR="code/unix"
 ICNS="quake3_flat.icns"
-PKGINFO="APPLIOOMG"
+PKGINFO="APPLIODQ3"
 
 OBJROOT="build"
 #BUILT_PRODUCTS_DIR="${OBJROOT}/${TARGET_NAME}-darwin-${CURRENT_ARCH}"
-PRODUCT_NAME="omega"
+PRODUCT_NAME="devotion"
 WRAPPER_EXTENSION="app"
-WRAPPER_NAME="OmegA.${WRAPPER_EXTENSION}"
+WRAPPER_NAME="Devotion.${WRAPPER_EXTENSION}"
 CONTENTS_FOLDER_PATH="${WRAPPER_NAME}/Contents"
 UNLOCALIZED_RESOURCES_FOLDER_PATH="${CONTENTS_FOLDER_PATH}/Resources"
 EXECUTABLE_FOLDER_PATH="${CONTENTS_FOLDER_PATH}/MacOS"
@@ -253,12 +253,12 @@ done
 cd `dirname $0`
 
 if [ ! -f Makefile ]; then
-	echo "$0 must be run from the omega build directory"
+	echo "$0 must be run from the devotion build directory"
 	exit 1
 fi
 
 if [ "${IOQ3_CLIENT_ARCHS}" == "" ]; then
-	echo "$0: no omega binary architectures were found for target '${TARGET_NAME}'"
+	echo "$0: no devotion binary architectures were found for target '${TARGET_NAME}'"
 	exit 1
 fi
 

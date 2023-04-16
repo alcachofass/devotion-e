@@ -281,9 +281,9 @@ PROTOCOL
 ==============================================================
 */
 
-#define	OLD_PROTOCOL_VERSION	71
+#define	OLD_PROTOCOL_VERSION	68
 // new protocol with UDP spoofing protection:
-#define	NEW_PROTOCOL_VERSION	72
+#define	NEW_PROTOCOL_VERSION	71
 // 1.31 - 67
 
 #define DEFAULT_PROTOCOL_VERSION	OLD_PROTOCOL_VERSION
@@ -296,7 +296,7 @@ extern const int demo_protocols[];
 #define	UPDATE_SERVER_NAME	"update.quake3arena.com"
 // override on command line, config files etc.
 #ifndef MASTER_SERVER_NAME
-#define MASTER_SERVER_NAME	"dpmaster.deathmask.net"
+#define MASTER_SERVER_NAME	"master.quake3arena.com"
 #endif
 #ifndef AUTHORIZE_SERVER_NAME
 #define	AUTHORIZE_SERVER_NAME	"authorize.quake3arena.com"
