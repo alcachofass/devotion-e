@@ -1520,8 +1520,8 @@ const char *VM_CheckInstructions( instruction_t *buf,
 				break;
 			}
 			if ( buf[n].opStack != 0 ) {
-				Com_Printf( S_COLOR_YELLOW "jump target %i set on instruction %i (%s) with bad opStack %i\n",
-					i, n, opname[ buf[n].op ], buf[n].opStack );
+				//Com_Printf( S_COLOR_YELLOW "jump target %i set on instruction %i (%s) with bad opStack %i\n",
+					//i, n, opname[ buf[n].op ], buf[n].opStack );
 				break;
 			}
 		}
