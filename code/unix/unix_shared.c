@@ -343,9 +343,18 @@ const char *Sys_Dirname( char *path )
 Sys_Mkdir
 =================
 */
-void Sys_Mkdir( const char *path )
+qboolean Sys_Mkdir( const char *path )
 {
-    mkdir( path, 0750 );
+
+	if ( mkdir( path, 0750 ) == 0 ) {
+		return qtrue;
+	} else {
+		if ( errno == EEXIST ) {
+			return qtrue;
+		} else {
+			return qfalse;
+		}
+	}
 }
 
 
