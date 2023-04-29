@@ -1130,7 +1130,8 @@ Q_log2f
 */
 float Q_log2f( float f )
 {
-	return logf(( f ) / M_LN2);		// VS2005: added parens to avoid compiler syntax error
+	const float v = logf( f );
+	return v / M_LN2;
 }
 
 

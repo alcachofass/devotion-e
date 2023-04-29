@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "snd_public.h"
 
 cvar_t *s_volume;
+cvar_t *s_muted;
 cvar_t *s_musicVolume;
 cvar_t *s_doppler;
 cvar_t *s_muteWhenMinimized;
@@ -233,7 +234,26 @@ S_Update
 */
 void S_Update( int msec )
 {
-	if ( si.Update ) {
+	if(s_muted->integer)
+	{
+		if(!(gw_minimized && s_muteWhenMinimized->integer) &&
+		   !(!gw_active && !gw_minimized && s_muteWhenUnfocused->integer))
+		{
+			s_muted->integer = qfalse;
+			s_muted->modified = qtrue;
+		}
+	}
+	else
+	{
+		if((gw_minimized && s_muteWhenMinimized->integer) ||
+		   (!gw_active && !gw_minimized && s_muteWhenUnfocused->integer))
+		{
+			s_muted->integer = qtrue;
+			s_muted->modified = qtrue;
+		}
+	}
+	
+	if( si.Update ) {
 		si.Update( msec );
 	}
 }
@@ -416,6 +436,7 @@ void S_Init( void )
 	s_musicVolume = Cvar_Get( "s_musicVolume", "0.25", CVAR_ARCHIVE );
 	Cvar_CheckRange( s_musicVolume, "0", "1", CV_FLOAT );
 	Cvar_SetDescription( s_musicVolume, "Sets volume for in-game music only." );
+	s_muted = Cvar_Get("s_muted", "0", CVAR_ROM);
 	s_doppler = Cvar_Get( "s_doppler", "1", CVAR_ARCHIVE_ND );
 	Cvar_CheckRange( s_doppler, "0", "1", CV_INTEGER );
 	Cvar_SetDescription( s_doppler, "Enables doppler effect on moving projectiles." );
