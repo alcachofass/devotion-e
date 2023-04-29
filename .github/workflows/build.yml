@@ -175,7 +175,6 @@ jobs:
       #if: matrix.cc == 'gcc' && matrix.btype == 'Release'
       with:
         name: linux-${{ matrix.arch }}
->>>>>>> d47bdbe3acbd030caca664d38e65abbaad5b68e8
         path: bin
         if-no-files-found: error
         retention-days: 5
