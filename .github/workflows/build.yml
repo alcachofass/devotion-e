@@ -178,11 +178,11 @@ jobs:
 
       - name: Create binary archives
         run: |
-          7z a -r omega-engine-linux-x86.zip      ./release-linux-x86
-          7z a -r omega-engine-linux-x86_64.zip   ./release-linux-x86_64
-          7z a -r omega-engine-windows-x86.zip    ./release-mingw64-x86
-          7z a -r omega-engine-windows-x86_64.zip ./release-mingw64-x86_64
-          7z a -r omega-engine-macos-x86_64.zip   ./release-darwin-x86_64
+          7z a -r devotion-engine-linux-x86.zip      ./release-linux-x86
+          7z a -r devotion-engine-linux-x86_64.zip   ./release-linux-x86_64
+          7z a -r devotion-engine-windows-x86.zip    ./release-mingw64-x86
+          7z a -r devotion-engine-windows-x86_64.zip ./release-mingw64-x86_64
+          7z a -r devotion-engine-macos-x86_64.zip   ./release-darwin-x86_64
 
       - name: Create latest build
         uses: marvinpinto/action-automatic-releases@latest
